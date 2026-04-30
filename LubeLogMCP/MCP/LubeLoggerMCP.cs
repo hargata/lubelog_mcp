@@ -1,4 +1,5 @@
-﻿using LubeLogMCP.Models;
+﻿using LubeLogMCP.Helper;
+using LubeLogMCP.Models;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Text;
@@ -25,7 +26,8 @@ namespace LubeLogMCP.MCP
         [McpServerTool, Description("Gets status of LubeLogger MCP.")]
         public async Task<string> GetLubeLoggerMCPStatus()
         {
-            string result = string.Empty;
+            string result = $"MCP Version: {StaticHelper.VersionNumber}";
+            result += Environment.NewLine;
             if (!string.IsNullOrWhiteSpace(instance))
             {
                 result += $"MCP Server Configured for {instance}";
@@ -96,27 +98,26 @@ namespace LubeLogMCP.MCP
             [Description("Any missed fuel ups")] bool missedFuelUp,
             [Description("Any extra fields configured for gasrecord")] List<ExtraField> extraFields)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("odometer", odometer.ToString()),
-             new KeyValuePair<string, string>("fuelConsumed", volume.ToString()),
-             new KeyValuePair<string, string>("cost", cost.ToString()),
-             new KeyValuePair<string, string>("isFillToFull", fillToFull.ToString()),
-             new KeyValuePair<string, string>("missedFuelUp", missedFuelUp.ToString()),
-        };
-
-            for(int i = 0; i < extraFields.Count; i++)
+            var requestData = new PostRequestModel
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                Date = date.ToString("yyyy-MM-dd"),
+                Odometer = odometer,
+                FuelConsumed = volume,
+                Cost = cost,
+                IsFillToFull = fillToFull,
+                MissedFuelUp = missedFuelUp
+            };
+
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value  });
             }
 
             string endpoint = $"{instance}/api/vehicle/gasrecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
@@ -140,25 +141,24 @@ namespace LubeLogMCP.MCP
             [Description("Total cost of the service")] decimal cost,
             [Description("Any extra fields configured for servicerecord")] List<ExtraField> extraFields)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("odometer", odometer.ToString()),
-             new KeyValuePair<string, string>("description", description),
-             new KeyValuePair<string, string>("cost", cost.ToString())
-        };
+            var requestData = new PostRequestModel
+            {
+                Date = date.ToString("yyyy-MM-dd"),
+                Odometer = odometer,
+                Description = description,
+                Cost = cost
+            };
 
             for (int i = 0; i < extraFields.Count; i++)
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
             string endpoint = $"{instance}/api/vehicle/servicerecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
@@ -182,25 +182,24 @@ namespace LubeLogMCP.MCP
             [Description("Total cost of the repair")] decimal cost,
             [Description("Any extra fields configured for repairrecord")] List<ExtraField> extraFields)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("odometer", odometer.ToString()),
-             new KeyValuePair<string, string>("description", description),
-             new KeyValuePair<string, string>("cost", cost.ToString())
-        };
+            var requestData = new PostRequestModel
+            {
+                Date = date.ToString("yyyy-MM-dd"),
+                Odometer = odometer,
+                Description = description,
+                Cost = cost
+            };
 
             for (int i = 0; i < extraFields.Count; i++)
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
             string endpoint = $"{instance}/api/vehicle/repairrecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
@@ -224,25 +223,24 @@ namespace LubeLogMCP.MCP
             [Description("Total cost of the upgrade")] decimal cost,
             [Description("Any extra fields configured for upgraderecord")] List<ExtraField> extraFields)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("odometer", odometer.ToString()),
-             new KeyValuePair<string, string>("description", description),
-             new KeyValuePair<string, string>("cost", cost.ToString())
-        };
+            var requestData = new PostRequestModel
+            {
+                Date = date.ToString("yyyy-MM-dd"),
+                Odometer = odometer,
+                Description = description,
+                Cost = cost
+            };
 
             for (int i = 0; i < extraFields.Count; i++)
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
             string endpoint = $"{instance}/api/vehicle/upgraderecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
@@ -265,28 +263,27 @@ namespace LubeLogMCP.MCP
             [Description("Any extra fields configured for odometerrecord")] List<ExtraField> extraFields,
             [Description("Ids of equipment equipped for the vehicle")] List<int> equipmentRecordIds)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("odometer", odometer.ToString())
-        };
-
-             if (equipmentRecordIds.Any())
+            var requestData = new PostRequestModel
             {
-                dataParams.Add(new KeyValuePair<string, string>("equipmentRecordId", string.Join(' ', equipmentRecordIds)));
+                Date = date.ToString("yyyy-MM-dd"),
+                Odometer = odometer
+            };
+
+            if (equipmentRecordIds.Any())
+            {
+                requestData.EquipmentRecordId = string.Join(' ', equipmentRecordIds);
             }
 
             for (int i = 0; i < extraFields.Count; i++)
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
             string endpoint = $"{instance}/api/vehicle/odometerrecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
@@ -336,27 +333,26 @@ namespace LubeLogMCP.MCP
             [Description("Part supplier")] string partSupplier,
             [Description("Any extra fields configured for supplyrecord")] List<ExtraField> extraFields)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("description", description),
-             new KeyValuePair<string, string>("partQuantity", quantity.ToString()),
-             new KeyValuePair<string, string>("cost", cost.ToString()),
-             new KeyValuePair<string, string>("partNumber", partNumber),
-             new KeyValuePair<string, string>("partSupplier", partSupplier)
-        };
+            var requestData = new PostRequestModel
+            {
+                Date = date.ToString("yyyy-MM-dd"),
+                Description = description,
+                PartQuantity = quantity,
+                Cost = cost,
+                PartNumber = partNumber,
+                PartSupplier = partSupplier
+            };
 
             for (int i = 0; i < extraFields.Count; i++)
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
             string endpoint = $"{instance}/api/vehicle/supplyrecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
@@ -381,27 +377,26 @@ namespace LubeLogMCP.MCP
             [Description("Part supplier")] string partSupplier,
             [Description("Any extra fields configured for supplyrecord")] List<ExtraField> extraFields)
         {
-            var dataParams = new List<KeyValuePair<string, string>>
-        {
-             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
-             new KeyValuePair<string, string>("description", description),
-             new KeyValuePair<string, string>("partQuantity", quantity.ToString()),
-             new KeyValuePair<string, string>("cost", cost.ToString()),
-             new KeyValuePair<string, string>("partNumber", partNumber),
-             new KeyValuePair<string, string>("partSupplier", partSupplier)
-        };
+            var requestData = new PostRequestModel
+            {
+                Date = date.ToString("yyyy-MM-dd"),
+                Description = description,
+                PartQuantity = quantity,
+                Cost = cost,
+                PartNumber = partNumber,
+                PartSupplier = partSupplier
+            };
 
             for (int i = 0; i < extraFields.Count; i++)
             {
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
-                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+                requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
             string endpoint = $"{instance}/api/vehicle/supplyrecords/add?vehicleId=0";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
-                Content = new FormUrlEncodedContent(dataParams)
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
             AddAuthHeaders(request);
             try
