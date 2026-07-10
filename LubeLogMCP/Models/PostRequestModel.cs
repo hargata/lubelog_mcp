@@ -28,6 +28,10 @@ namespace LubeLogMCP.Models
         public string PartNumber { get; set; } = string.Empty;
         [JsonPropertyName("partSupplier")]
         public string PartSupplier { get; set; } = string.Empty;
+        [JsonPropertyName("startingSoc")]
+        public int StartingSoc { get; set; }
+        [JsonPropertyName("endingSoc")]
+        public int EndingSoc { get; set; }
     }
     public class ExtraFieldPostModel
     {

@@ -8,6 +8,7 @@
         public string Model { get; set; } = string.Empty;
         public string LicensePlate { get; set; } = string.Empty;
         public List<ExtraField> ExtraFields { get; set; } = new List<ExtraField>();
+        public bool IsElectric { get; set; } = false;
         public string VehicleIdentifier { get; set; } = "LicensePlate";
         public string Identifier { get {
                 if (VehicleIdentifier == "LicensePlate")

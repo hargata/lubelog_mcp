@@ -2,6 +2,6 @@
 {
     public static class StaticHelper
     {
-        public const string VersionNumber = "0.1.2";
+        public const string VersionNumber = "0.1.3";
     }
 }

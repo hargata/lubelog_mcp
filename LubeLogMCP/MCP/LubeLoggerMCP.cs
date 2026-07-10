@@ -87,6 +87,30 @@ namespace LubeLogMCP.MCP
                 return ex.Message;
             }
         }
+        [McpServerTool, Description("Check if a vehicle is an electric vehicle")]
+        public async Task<string> GetVehicleIsElectric([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicles";
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<List<Vehicle>>();
+                foreach (Vehicle vehicle in result ?? new List<Vehicle>())
+                {
+                    if (vehicle.Id == vehicleId && vehicle.IsElectric)
+                    {
+                        return "this is an electric vehicle";
+                    }
+                }
+                return "this is not an electric vehicle";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         [McpServerTool, Description("Adds a fuel record.")]
         public async Task<string> AddFuelRecord(
             [Description("id of the vehicle")] int vehicleId,
@@ -96,6 +120,8 @@ namespace LubeLogMCP.MCP
             [Description("Total cost of fuel up")] decimal cost,
             [Description("Is fueled up completely")] bool fillToFull,
             [Description("Any missed fuel ups")] bool missedFuelUp,
+            [Description("State of Charge at beginning of charge session if charging an electric vehicle, default to 20 if not an electric vehicle")] int startingSoc,
+            [Description("State of Charge at end of charge session if charging an electric vehicle, default to 80 if not an electric vehicle")] int endingSoc,
             [Description("Any extra fields configured for gasrecord")] List<ExtraField> extraFields)
         {
             var requestData = new PostRequestModel
@@ -105,7 +131,9 @@ namespace LubeLogMCP.MCP
                 FuelConsumed = volume,
                 Cost = cost,
                 IsFillToFull = fillToFull,
-                MissedFuelUp = missedFuelUp
+                MissedFuelUp = missedFuelUp,
+                StartingSoc = startingSoc,
+                EndingSoc = endingSoc
             };
 
             for (int i = 0; i < extraFields.Count; i++)
