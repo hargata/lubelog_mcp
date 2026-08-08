@@ -27,6 +27,8 @@ For details on both configurations, see [Wiki](https://github.com/hargata/lubelo
 - Add Odometer record from image of dashboard
 - Add Supply(or shop supply) record from image of invoice
 - Get latest odometer reading from vehicle
+- Get Fuel/Service/Repair/Upgrade/Odometer/Supply records for a vehicle
+- Get shop supply records
 - Check status of LubeLogger instance
 
 ## Example Usage
