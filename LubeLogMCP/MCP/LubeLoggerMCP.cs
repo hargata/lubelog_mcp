@@ -160,6 +160,26 @@ namespace LubeLogMCP.MCP
                 return ex.Message;
             }
         }
+        [McpServerTool, Description("Gets fuel records for a vehicle.")]
+        public async Task<string> GetFuelRecords([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicle/gasrecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         [McpServerTool, Description("Adds a service record.")]
         public async Task<string> AddServiceRecord(
             [Description("id of the vehicle")] int vehicleId,
@@ -188,6 +208,26 @@ namespace LubeLogMCP.MCP
             {
                 Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Gets service records for a vehicle.")]
+        public async Task<string> GetServiceRecords([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicle/servicerecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
             AddAuthHeaders(request);
             try
             {
@@ -242,6 +282,26 @@ namespace LubeLogMCP.MCP
                 return ex.Message;
             }
         }
+        [McpServerTool, Description("Gets repair records for a vehicle.")]
+        public async Task<string> GetRepairRecords([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicle/repairrecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         [McpServerTool, Description("Adds an upgrade record.")]
         public async Task<string> AddUpgradeRecord(
             [Description("id of the vehicle")] int vehicleId,
@@ -270,6 +330,26 @@ namespace LubeLogMCP.MCP
             {
                 Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Gets upgrade records for a vehicle.")]
+        public async Task<string> GetUpgradeRecords([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicle/upgraderecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
             AddAuthHeaders(request);
             try
             {
@@ -313,6 +393,26 @@ namespace LubeLogMCP.MCP
             {
                 Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Gets odometer records for a vehicle.")]
+        public async Task<string> GetOdometerRecords([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicle/odometerrecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
             AddAuthHeaders(request);
             try
             {
@@ -395,6 +495,26 @@ namespace LubeLogMCP.MCP
                 return ex.Message;
             }
         }
+        [McpServerTool, Description("Gets supply records for a vehicle.")]
+        public async Task<string> GetSupplyRecords([Description("id of the vehicle")] int vehicleId)
+        {
+            string endpoint = $"{instance}/api/vehicle/supplyrecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         [McpServerTool, Description("Adds a shop supply record.")]
         public async Task<string> AddShopSupplyRecord(
             [Description("Date purchased")] DateTime date,
@@ -426,6 +546,26 @@ namespace LubeLogMCP.MCP
             {
                 Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
             };
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Gets shop supply records.")]
+        public async Task<string> GetShopSupplyRecords()
+        {
+            string endpoint = $"{instance}/api/vehicle/supplyrecords?vehicleId=0";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
             AddAuthHeaders(request);
             try
             {
