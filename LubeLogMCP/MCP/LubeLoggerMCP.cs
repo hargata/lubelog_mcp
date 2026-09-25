@@ -487,6 +487,43 @@ namespace LubeLogMCP.MCP
                 return ex.Message;
             }
         }
+        [McpServerTool, Description("Adds a maintenance reminder for a vehicle: due at a date, an odometer reading, or whichever of the two comes first.")]
+        public async Task<string> AddReminderRecord(
+            [Description("id of the vehicle")] int vehicleId,
+            [Description("What the reminder is for")] string description,
+            [Description("Date: due on a date only. Odometer: due at a reading only. Both: due whichever of dueDate/dueOdometer comes first")] ReminderMetric metric,
+            [Description("Due date. Required unless metric is Odometer")] DateTime? dueDate,
+            [Description("Due odometer reading. Required unless metric is Date")] int? dueOdometer,
+            [Description("Optional notes")] string notes = "")
+        {
+            var requestData = new PostRequestModel
+            {
+                Description = description,
+                Metric = metric.ToString(),
+                DueDate = dueDate?.ToString("yyyy-MM-dd") ?? string.Empty,
+                DueOdometer = dueOdometer,
+                Notes = notes
+            };
+
+            string endpoint = $"{instance}/api/vehicle/reminders/add?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
+            };
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         [McpServerTool, Description("Gets latest odometer reading for a vehicle.")]
         public async Task<string> GetLatestOdometer(
             [Description("id of the vehicle")] int vehicleId
@@ -502,6 +539,57 @@ namespace LubeLogMCP.MCP
                 var httpClient = _httpClientFactory.CreateClient();
                 var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
 
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Gets odometer history for a vehicle, oldest first. Use this plus the current date to work out average distance per day and project forward to any future mileage.")]
+        public async Task<string> GetOdometerRecords(
+            [Description("id of the vehicle")] int vehicleId
+            )
+        {
+
+            string endpoint = $"{instance}/api/vehicle/odometerrecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
+            AddAuthHeaders(request);
+            try
+            {
+                // Passed through as-is, like GetLatestOdometer below: lubelog's own export DTO for
+                // this route types id/odometer as string with a lenient (string-or-number) converter
+                // for *reading* an import payload, but what it actually writes back on GET is a bare
+                // JSON number for those fields — a strongly-typed model here would only be one lubelog
+                // release away from breaking again. Records come back oldest-first already; if that
+                // ever isn't true for your data, sort on the "date" field.
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Gets maintenance reminders for a vehicle: what is due, on which metric (Date, Odometer, or Both), the due date/odometer, and lubelog's own urgency and days/distance-remaining countdown as of now.")]
+        public async Task<string> GetReminders(
+            [Description("id of the vehicle")] int vehicleId
+            )
+        {
+
+            string endpoint = $"{instance}/api/vehicle/reminders?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
+            AddAuthHeaders(request);
+            try
+            {
+                // Passed through as-is - same reasoning as GetOdometerRecords above.
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
                 return result;
             }
             catch (Exception ex)

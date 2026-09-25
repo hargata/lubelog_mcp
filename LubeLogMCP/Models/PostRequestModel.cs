@@ -32,6 +32,14 @@ namespace LubeLogMCP.Models
         public int StartingSoc { get; set; }
         [JsonPropertyName("endingSoc")]
         public int EndingSoc { get; set; }
+        [JsonPropertyName("metric")]
+        public string Metric { get; set; } = string.Empty;
+        [JsonPropertyName("dueDate")]
+        public string DueDate { get; set; } = string.Empty;
+        [JsonPropertyName("dueOdometer")]
+        public int? DueOdometer { get; set; }
+        [JsonPropertyName("notes")]
+        public string Notes { get; set; } = string.Empty;
     }
     public class ExtraFieldPostModel
     {
