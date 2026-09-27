@@ -439,7 +439,9 @@ namespace LubeLogMCP.MCP
                 return ex.Message;
             }
         }
-        [McpServerTool, Description("Adds a vehicle record.")]
+        [McpServerTool, Description("Adds a vehicle record. Note: unlike every other write in this server, LubeLogger's " +
+            "POST /api/vehicles/add does not check the API key's own permission tier (View/Edit/Manager) - confirmed " +
+            "live, a Viewer-tier key can call this successfully. Treat any working key as able to create vehicles.")]
         public async Task<string> AddVehicleRecord(
             [Description("Model year of the vehicle")] int year,
             [Description("Make of the vehicle")] string make,

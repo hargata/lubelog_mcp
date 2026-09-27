@@ -18,6 +18,13 @@ Header Auth is more complex to set up but offers greater security, whereas Local
 
 For details on both configurations, see [Wiki](https://github.com/hargata/lubelog_mcp/wiki)
 
+**API key tier note:** on a live LubeLogger 1.7.3 instance, `POST /api/vehicles/add`
+(`AddVehicleRecord`) does not check the calling key's own permission tier
+(View/Edit/Manager), unlike every other write endpoint this server uses. A
+Viewer-tier key can create vehicles. This is LubeLogger's own behaviour, not
+something this server adds or can restrict — treat any working key as able to
+create vehicles.
+
 ## Commands Supported
 
 - Retrieve list of vehicles
