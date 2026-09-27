@@ -307,7 +307,11 @@ namespace LubeLogMCP.MCP
                 requestData.ExtraFields.Add(new ExtraFieldPostModel { Name = extraFields[i].Name, Value = extraFields[i].Value });
             }
 
-            string endpoint = $"{instance}/api/vehicle/odometerrecords/add?vehicleId={vehicleId}";
+            // autoIncludeEquipment is sent explicitly so lubelog's QueryParamFilter does not go looking for it in
+            // the request body. That filter is `async void` and only finds a rewindable body when the request
+            // Content-Type is exactly "application/json" (StringContent adds "; charset=utf-8"), so with the
+            // parameter missing it throws on the raw stream, which takes lubelog itself down.
+            string endpoint = $"{instance}/api/vehicle/odometerrecords/add?vehicleId={vehicleId}&autoIncludeEquipment=false";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
