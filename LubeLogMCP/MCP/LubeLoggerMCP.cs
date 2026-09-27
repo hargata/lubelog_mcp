@@ -35,7 +35,7 @@ namespace LubeLogMCP.MCP
                 string endpoint = $"{instance}/api/version";
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
                 AddAuthHeaders(request);
-                if (request.Headers.Contains("Authorization"))
+                if (request.Headers.Contains("Authorization") || request.Headers.Contains("x-api-key"))
                 {
                     result += "Auth Configured";
                 } else
